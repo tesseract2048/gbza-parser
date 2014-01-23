@@ -5,23 +5,23 @@ using System.Net;
 using System.Collections;
 using System.IO;
 
-namespace gzbaComm
+namespace gbzaComm
 {
-    public class gzbaSection
+    public class gbzaSection
     {
         public bool isData;
         public byte ID1;
         public byte ID2;
         public int Size1;
         public int Size2;
-        public List<gzbaSection> Children = new List<gzbaSection>();
+        public List<gbzaSection> Children = new List<gbzaSection>();
         public byte[] Data;
-        public gzbaSection(byte[] data)
+        public gbzaSection(byte[] data)
         {
             isData = true;
             Data = data;
         }
-        public gzbaSection(byte id1, byte id2, int size1)
+        public gbzaSection(byte id1, byte id2, int size1)
         {
             isData = false;
             ID1 = id1;
@@ -29,7 +29,7 @@ namespace gzbaComm
             Size1 = size1;
             Size2 = 0;
         }
-        public gzbaSection(byte id1, byte id2, int size1, int size2)
+        public gbzaSection(byte id1, byte id2, int size1, int size2)
         {
             isData = false;
             ID1 = id1;
@@ -39,10 +39,10 @@ namespace gzbaComm
         }
     }
 
-    public class gzbaFormat
+    public class gbzaFormat
     {
         private System.IO.MemoryStream mStream;
-        List<gzbaSection> root;
+        List<gbzaSection> root;
         private BinaryReader bReader;
         public byte[] Attached = null;
 
@@ -53,7 +53,7 @@ namespace gzbaComm
             {
                 if (root[i].ID1 == 0x16 && root[i].ID2 == 0x00)
                 {
-                    gzbaSection cookie = root[i];
+                    gbzaSection cookie = root[i];
                     rtn.Add(Encoding.UTF8.GetString(cookie.Children[0].Children[0].Data) + "=" + Encoding.UTF8.GetString(cookie.Children[1].Children[0].Data));
                 }
             }
@@ -84,7 +84,7 @@ namespace gzbaComm
                         {
                             for (int k = 0; k < root[i].Children[j].Children.Count; k++)
                             {
-                                gzbaSection child = root[i].Children[j].Children[k];
+                                gbzaSection child = root[i].Children[j].Children[k];
                                 if (child.ID1 == 0x09 && child.ID2 == 0x00 && child.Children.Count == 2)
                                 {
                                     byte[] buf = child.Children[0].Data;
@@ -114,7 +114,7 @@ namespace gzbaComm
                 {
                     for (int k = 0; k < root[i].Children.Count; k++)
                     {
-                        gzbaSection child = root[i].Children[k];
+                        gbzaSection child = root[i].Children[k];
                         if (child.ID1 == 0x09 && child.ID2 == 0x00 && child.Children.Count == 2)
                         {
                             byte[] buf = child.Children[0].Data;
@@ -134,7 +134,7 @@ namespace gzbaComm
             return null;
         }
 
-        private int walkSection(List<gzbaSection> parent, int length)
+        private int walkSection(List<gbzaSection> parent, int length)
         {
             int readlen = 0;
             while (readlen < length)
@@ -155,7 +155,7 @@ namespace gzbaComm
                     }
                     if (size1 + size2 > length - readlen) goto datafield;
                     if (size1 < 0 || size2 < 0) goto datafield;
-                    gzbaSection newSection = new gzbaSection(id1, id2, size1, size2);
+                    gbzaSection newSection = new gbzaSection(id1, id2, size1, size2);
                     if (mStream.Position + size1 <= mStream.Length) readlen += walkSection(newSection.Children, size1);
                     else goto datafield;
                     if (size2 > 0)
@@ -175,16 +175,16 @@ namespace gzbaComm
                     buf.Add(rd);
                     readbak++;
                 }
-                gzbaSection newDataSection = new gzbaSection(buf.ToArray());
+                gbzaSection newDataSection = new gbzaSection(buf.ToArray());
                 parent.Add(newDataSection);
                 readlen = readbak;
             }
             return readlen;
         }
-        public gzbaFormat(byte[] _buf)
+        public gbzaFormat(byte[] _buf)
         {
             byte[] buf = decompressdb1(_buf);
-            root = new List<gzbaSection>();
+            root = new List<gbzaSection>();
             mStream = new MemoryStream(buf);
             bReader = new BinaryReader(mStream);
             walkSection(root, (int)mStream.Length);
@@ -256,7 +256,7 @@ namespace gzbaComm
         }
     }
 
-    public class gzbaConnect
+    public class gbzaConnect
     {
         private System.Collections.Specialized.OrderedDictionary Headers = new System.Collections.Specialized.OrderedDictionary();
         private System.Collections.Specialized.OrderedDictionary Fields = new System.Collections.Specialized.OrderedDictionary();
@@ -273,12 +273,12 @@ namespace gzbaComm
             Fields[name] = val;
         }
 
-        public gzbaFormat SendRequest(string method, string referer, string _url)
+        public gbzaFormat SendRequest(string method, string referer, string _url)
         {
             return SendRequest(method, referer, _url, null);
         }
 
-        public gzbaFormat SendRequest(string method, string referer, string _url, string _proxy)
+        public gbzaFormat SendRequest(string method, string referer, string _url, string _proxy)
         {
             HttpWebRequest newRequest = HttpWebRequest.Create(_url) as HttpWebRequest;
             newRequest.ServicePoint.Expect100Continue = false;
@@ -358,7 +358,7 @@ namespace gzbaComm
                 rBuf.AddRange(tmp2);
             }
             response.Close();
-            return new gzbaFormat(rBuf.ToArray());
+            return new gbzaFormat(rBuf.ToArray());
         }
 
     }

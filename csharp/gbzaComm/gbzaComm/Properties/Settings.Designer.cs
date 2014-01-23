@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace gzbaComm.Properties
+namespace gbzaComm.Properties
 {
 
 

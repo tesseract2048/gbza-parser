@@ -7,8 +7,8 @@
     <ProjectGuid>{2BD2A3E6-3256-42C8-9B4E-182D1B474CE2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>gzbaComm</RootNamespace>
-    <AssemblyName>gzbaComm</AssemblyName>
+    <RootNamespace>gbzaComm</RootNamespace>
+    <AssemblyName>gbzaComm</AssemblyName>
     <StartupObject>
     </StartupObject>
   </PropertyGroup>
@@ -38,7 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="gzbaConnect.cs" />
+    <Compile Include="gbzaConnect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

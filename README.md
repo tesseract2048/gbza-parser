@@ -1,4 +1,4 @@
-gzba-parser
+gbza-parser
 ===========
 
-parser for baidu GZBA format
+parser for baidu GBZA format
